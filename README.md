@@ -1,6 +1,6 @@
-# Webcam Spectrophotometer — Real-time Optical Analysis
+# Webcam Spectrometer — Real-time Optical Analysis
 
-Aplikasi spektrofotometer berbasis web menggunakan kamera webcam sebagai sensor intensitas cahaya. Aplikasi ini dirancang untuk mengukur spektrum intensitas cahaya dan absorbansi (A) secara real-time dari larutan sampel dengan melakukan serangkaian percobaan (9 kali ulangan).
+Aplikasi spektrometer berbasis web menggunakan kamera webcam sebagai sensor intensitas cahaya. Aplikasi ini dirancang untuk mengukur spektrum intensitas cahaya dan absorbansi (A) secara real-time dari larutan sampel dengan melakukan serangkaian percobaan (9 kali ulangan).
 
 ---
 
@@ -28,7 +28,7 @@ Aplikasi spektrofotometer berbasis web menggunakan kamera webcam sebagai sensor 
 Proyek ini telah direfaktor menjadi beberapa modul terpisah untuk kemudahan pemeliharaan:
 
 ```text
-spektrofotometer/
+spektrometer/
 │
 ├── app/
 │   ├── app.py           # Entry point utama FastAPI server & router.
@@ -53,7 +53,7 @@ spektrofotometer/
 Pastikan sistem Anda sudah terinstal **Python 3.8+** dan kamera webcam eksternal terhubung di port USB.
 
 ### 2. Instalasi Dependensi
-Buka terminal/command prompt pada direktori utama proyek (`spektrofotometer/`) lalu jalankan perintah berikut:
+Buka terminal/command prompt pada direktori utama proyek (`spektrometer/`) lalu jalankan perintah berikut:
 
 ```bash
 pip install -r requirements.txt
@@ -63,7 +63,7 @@ pip install -r requirements.txt
 
 ## Cara Menjalankan Aplikasi
 
-Jalankan perintah berikut pada direktori utama proyek (`spektrofotometer/`):
+Jalankan perintah berikut pada direktori utama proyek (`spektrometer/`):
 
 ```bash
 python app/app.py
@@ -80,7 +80,7 @@ http://localhost:8000/
 
 1. **Kalibrasi Gelap**: Matikan sumber cahaya atau letakkan sistem dalam kondisi tertutup gelap total. Tekan tombol **Set 0** agar intensitas sisa dikurangi menjadi nol.
 2. **Kamera**: Pastikan kamera yang digunakan sudah tepat dengan menekan modul penampil nama kamera di kiri atas layar panel (bisa berpindah antar kamera).
-3. **Kuvet Kosong**: Tempatkan kuvet kosong pada spektrofotometer, lalu tekan tombol **Mulai Percobaan** untuk merekam data. Ulangi proses hingga 3 kali percobaan untuk _baseline_.
+3. **Kuvet Kosong**: Tempatkan kuvet kosong pada spektrometer, lalu tekan tombol **Mulai Percobaan** untuk merekam data. Ulangi proses hingga 3 kali percobaan untuk _baseline_.
 4. **Referensi & Sampel**: Lanjutkan proses perekaman yang sama untuk kelompok **Aquadest ($I_0$)** (3 kali) dan kelompok **Larutan Pewarna Makanan ($I$)** (3 kali).
 5. **Analisis Absorbansi**: Setelah total 9 percobaan selesai, gulir layar ke paling bawah. Terdapat hasil kurva Absorbansi (A) lengkap beserta fungsi eksport berkas data analisis Excel.
 6. **Reset**: Gunakan tombol **Reset Ulang** untuk mengosongkan seluruh data sekaligus gambar dari _storage_ untuk siap melakukan pengujian baru.
