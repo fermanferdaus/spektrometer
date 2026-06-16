@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Real-time optical spectrophotometer dashboard."
+    />
+    <title>Spektrofotometer — Real-time Optical Analysis</title>
+
+    <!-- Premium Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <link rel="stylesheet" href="/static/css/style.css?v=11" />
+  </head>
+  <body>
+    <!-- Immersive Background Animation Element -->
+    <div class="bg-mesh"></div>
+
+    <div class="app-container">
+      <!-- Sleek Top Header -->
+      <header class="glass-header">
+        <div class="header-left">
+          <i class="ph-fill ph-aperture logo-icon"></i>
+          <div>
+            <h1 class="header-title">Spektrofotometer</h1>
+            <p class="header-subtitle">Real-time Absorbance Analysis</p>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <!-- Camera Selector -->
+          <div class="camera-selector" id="camera-selector">
+            <button class="btn-glass" id="btn-camera-toggle">
+              <i class="ph ph-video-camera"></i>
+              <span id="camera-active-name">Mencari kamera...</span>
+              <i class="ph ph-caret-down chevron-icon"></i>
+            </button>
+            <div class="camera-dropdown hidden" id="camera-dropdown">
+              <div class="camera-dropdown-header">
+                <span>Pilih Kamera</span>
+                <button
+                  class="btn-icon"
+                  id="btn-camera-refresh"
+                  title="Refresh"
+                >
+                  <i class="ph ph-arrows-clockwise"></i>
+                </button>
+              </div>
+              <div class="camera-list" id="camera-list">
+                <div class="camera-list-loading">Memuat kamera...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Bento Grid Dashboard -->
+      <main class="bento-grid">
+        <!-- 1. Hero Camera View -->
+        <section class="bento-box box-hero">
+          <div class="box-header-overlay">
+            <h2 class="box-title">
+              <i class="ph-fill ph-scan"></i> Sensor Optik
+            </h2>
+            <div id="camera-status-badge" class="badge badge--warn">
+              <div class="badge-dot"></div>
+              <span>Connecting</span>
+            </div>
+          </div>
+
+          <div class="video-container">
+            <img
+              id="video-stream"
+              src="/video_feed"
+              alt="Video stream"
+              crossorigin="anonymous"
+            />
+            <!-- Reticle -->
+            <div id="reticle">
+              <div class="reticle-corner rc-tl"></div>
+              <div class="reticle-corner rc-tr"></div>
+              <div class="reticle-corner rc-bl"></div>
+              <div class="reticle-corner rc-br"></div>
+              <div class="reticle-center"></div>
+            </div>
+          </div>
+
+          <!-- Live Floating Stats Overlay -->
+          <div class="live-overlay">
+            <div class="live-stat-glass">
+              <div class="live-stat-val">
+                <span id="val-lux" class="font-mono text-glow">0</span>
+                <span class="live-stat-unit">Lux</span>
+              </div>
+              <div class="live-stat-label">Intensitas Cahaya</div>
+              <div class="bar-track mt-2">
+                <div class="bar-fill" id="bar-lux"></div>
+              </div>
+            </div>
+
+            <div class="live-stat-glass">
+              <div class="live-stat-val">
+                <span id="val-wl" class="font-mono text-glow">0</span>
+                <span class="live-stat-unit">nm</span>
+              </div>
+              <div class="live-stat-label">Panjang Gelombang</div>
+              <div id="spectrum-strip" class="mt-2">
+                <div id="spectrum-needle"></div>
+              </div>
+            </div>
+
+            <div class="live-stat-glass">
+              <div class="live-stat-val">
+                <span
+                  id="val-color"
+                  class="text-glow"
+                  style="font-size: 1.5rem; text-transform: capitalize"
+                  >-</span
+                >
+              </div>
+              <div class="live-stat-label">Warna Dominan</div>
+              <div class="mt-2">
+                <div
+                  id="color-swatch"
+                  style="
+                    width: 100%;
+                    height: 6px;
+                    border-radius: 3px;
+                    background: #444;
+                    transition: background 0.3s;
+                    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+                  "
+                ></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. Controls & Progress Tracker -->
+        <section class="bento-box box-controls">
+          <div class="box-header">
+            <h2 class="box-title">
+              <i class="ph-fill ph-sliders"></i> Panel Kontrol
+            </h2>
+          </div>
+
+          <div class="controls-content">
+            <!-- Progress Stepper -->
+            <div class="stepper">
+              <div class="step" id="step-1">
+                <div class="step-icon"><i class="ph ph-empty-tube"></i></div>
+                <div class="step-info">
+                  <span class="step-name">1. Kuvet Kosong</span>
+                  <span class="step-progress" id="prog-blank">0/3</span>
+                </div>
+              </div>
+              <div class="step-line"></div>
+              <div class="step" id="step-2">
+                <div class="step-icon"><i class="ph ph-drop"></i></div>
+                <div class="step-info">
+                  <span class="step-name">2. Aquadest (I₀)</span>
+                  <span class="step-progress" id="prog-ref">0/3</span>
+                </div>
+              </div>
+              <div class="step-line"></div>
+              <div class="step" id="step-3">
+                <div class="step-icon"><i class="ph ph-flask"></i></div>
+                <div class="step-info">
+                  <span class="step-name">3. Larutan Pewarna (I)</span>
+                  <span class="step-progress" id="prog-sample">0/3</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+              <button id="btn-start" class="btn-glow btn-primary">
+                <i class="ph-fill ph-play-circle"></i>
+                <span>Mulai Percobaan</span>
+              </button>
+              <button id="btn-stop" class="btn-glow btn-danger hidden">
+                <i class="ph-fill ph-stop-circle"></i>
+                <span>Hentikan Rekaman</span>
+              </button>
+              <button id="btn-calibrate" class="btn-outline">
+                <i class="ph ph-moon"></i> <span>Set 0 (Kalibrasi Gelap)</span>
+              </button>
+              <button id="btn-reset" class="btn-outline">
+                <i class="ph ph-arrow-counter-clockwise"></i>
+                <span>Reset Ulang</span>
+              </button>
+            </div>
+
+            <p class="status-hint" id="status-hint">
+              Persiapkan kuvet kosong untuk kalibrasi awal.
+            </p>
+          </div>
+        </section>
+
+        <!-- 3. History Log -->
+        <section class="bento-box box-history">
+          <div class="box-header">
+            <h2 class="box-title">
+              <i class="ph-fill ph-clock-counter-clockwise"></i> Riwayat
+              Tangkapan
+            </h2>
+          </div>
+          <div class="history-list scrollable" id="history-list">
+            <!-- Injected by JS -->
+          </div>
+        </section>
+
+        <!-- 4. Final Absorbance Chart -->
+        <section class="bento-box box-chart hidden" id="absorbance-section">
+          <div class="box-header space-between">
+            <div class="flex-align">
+              <h2 class="box-title text-accent">
+                <i class="ph-fill ph-chart-line-up"></i> Hasil Absorbansi
+              </h2>
+              <div class="formula-chip">A(λ) = -log₁₀(I / I₀)</div>
+            </div>
+            <a
+              id="btn-export-abs"
+              href="/api/experiment/absorbance/excel"
+              class="btn-glass-sm"
+            >
+              <i class="ph ph-microsoft-excel-logo"></i> Export Data
+            </a>
+          </div>
+
+          <div class="chart-wrapper">
+            <canvas id="chart-absorbance"></canvas>
+          </div>
+
+          <div class="stats-grid" id="stats-absorbance">
+            <!-- Injected by JS -->
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Lightbox for History Images -->
+    <div class="lightbox" id="lightbox">
+      <div class="lightbox-actions">
+        <a
+          id="lightbox-download"
+          href="#"
+          class="lightbox-btn"
+          title="Unduh Gambar"
+          target="_blank"
+          ><i class="ph ph-download-simple"></i
+        ></a>
+        <button class="lightbox-btn" id="lightbox-close">
+          <i class="ph ph-x"></i>
+        </button>
+      </div>
+      <div class="lightbox-content">
+        <img id="lightbox-img" src="" alt="Fullscreen view" />
+      </div>
+    </div>
+
+    <!-- Custom Modal -->
+    <div id="custom-modal-overlay" class="modal-overlay hidden">
+      <div class="modal-box">
+        <h3 id="modal-title" class="modal-title">Konfirmasi</h3>
+        <p id="modal-message" class="modal-message">Apakah Anda yakin?</p>
+        <div class="modal-actions">
+          <button id="modal-btn-cancel" class="btn-outline">Batal</button>
+          <button id="modal-btn-confirm" class="btn-glow btn-primary">
+            Ya
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/static/js/main.js?v=18"></script>
+  </body>
+</html>
